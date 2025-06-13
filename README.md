@@ -115,3 +115,10 @@ DB_HOST = "host.docker.internal"
 ```
 
 Una vez levantado todo, deberían poder ver en Docker todos sus contenedores corriendo.
+
+
+### Endpoints de Pruebas
+- `POST /api/tests` crear una prueba con preguntas y opciones
+- `GET /api/tests/course/:course` listar pruebas por curso
+- `GET /api/tests/:id` obtener preguntas para que el estudiante rinda la prueba
+- `POST /api/tests/:id/submit` enviar respuestas y recibir resumen con puntaje

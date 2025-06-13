@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const alumnoRoutes = require('./routes/alumno.routes');
 const docenteRoutes = require('./routes/docente.routes');
+const testRoutes = require('./routes/test.routes');
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use(express.json());
 
 app.use('/api/alumnos', alumnoRoutes);
 app.use('/api/docentes', docenteRoutes);
-
+app.use('/api/tests', testRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor funcionando en el puerto ${PORT}`);
