@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type Curso = {
   nombre: string;
@@ -18,6 +20,12 @@ type Estudiante = {
 
 export default function EstudiantePage() {
   const [student, setStudent] = useState<Estudiante | null>(null);
+    const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem('rut');
+    router.push('/');
+  };
 
   useEffect(() => {
     const rut = localStorage.getItem('rut');
@@ -36,6 +44,11 @@ export default function EstudiantePage() {
   return (
     <main className="min-h-screen bg-blue-50 flex items-center justify-center p-6">
       <div className="bg-blue-100 p-8 rounded-2xl shadow-md w-full max-w-3xl">
+        <div className="flex justify-end gap-4 mb-4">
+          <Link href="/" className="text-blue-600 underline">Hjem</Link>
+          <button onClick={handleLogout} className="text-blue-600 underline">Logg ut</button>
+          <Link href="/estudiante/fag" className="text-blue-600 underline">Fag</Link>
+        </div>
         <h1 className="text-3xl font-bold text-center text-blue-900 mb-8">Perfil Estudiante</h1>
 
         <div className="bg-white p-6 rounded-xl shadow mb-6">
