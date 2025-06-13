@@ -10,7 +10,7 @@ const Alumno = {
       data.rut,
       data.nombre, 
       data.apellido,
-      data.curso, 
+      data.curso || null,
       JSON.stringify(data.historial_ensayos ?? []), 
       data.fecha_nacimiento, 
       data.correo

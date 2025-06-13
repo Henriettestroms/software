@@ -23,6 +23,7 @@ export default function LoginDocente() {
        if (res.ok) {
         // Guardamos el rut para usarlo en otras páginas
         localStorage.setItem('rut', rut);
+        localStorage.setItem('userType', 'docente');
         router.push('/docente');
       } else {
         setError('El usuario no existe.');

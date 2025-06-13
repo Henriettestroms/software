@@ -24,6 +24,7 @@ export default function EstudiantePage() {
 
   const handleLogout = () => {
     localStorage.removeItem('rut');
+    localStorage.removeItem('userType');
     router.push('/');
   };
 
@@ -45,9 +46,9 @@ export default function EstudiantePage() {
     <main className="min-h-screen bg-blue-50 flex items-center justify-center p-6">
       <div className="bg-blue-100 p-8 rounded-2xl shadow-md w-full max-w-3xl">
         <div className="flex justify-end gap-4 mb-4">
-          <Link href="/" className="text-blue-600 underline">Hjem</Link>
-          <button onClick={handleLogout} className="text-blue-600 underline">Logg ut</button>
-          <Link href="/estudiante/fag" className="text-blue-600 underline">Fag</Link>
+          <Link href="/" className="text-blue-600 underline">Inicio</Link>
+          <button onClick={handleLogout} className="text-blue-600 underline">Cerrar sesión</button>
+          <Link href="/estudiante/curso" className="text-blue-600 underline">Cursos</Link>
         </div>
         <h1 className="text-3xl font-bold text-center text-blue-900 mb-8">Perfil Estudiante</h1>
 

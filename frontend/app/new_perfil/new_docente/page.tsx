@@ -8,7 +8,6 @@ export default function NewDocentePage() {
     rut: '',
     nombre: '',
     apellido: '',
-    asignaturas: '',
     sueldo: '',
     correo: '',
     fecha_nacimiento: '',
@@ -33,6 +32,7 @@ export default function NewDocentePage() {
       if (res.ok) {
         localStorage.setItem('rut', form.rut)
         router.push('/docente');
+        localStorage.setItem('userType', 'docente')
       } else {
         const data = await res.json();
         setError(data.error || 'Error al crear el perfil.');
@@ -51,7 +51,6 @@ export default function NewDocentePage() {
             ['rut', 'RUT'],
             ['nombre', 'Nombre'],
             ['apellido', 'Apellido'],
-            ['asignaturas', 'Asignaturas (separadas por coma)'],
             ['correo', 'Correo Electrónico'],
             ['fecha_nacimiento', 'Fecha de Nacimiento'],
           ].map(([name, label]) => (

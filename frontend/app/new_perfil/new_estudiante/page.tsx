@@ -8,7 +8,6 @@ export default function NewEstudiantePage() {
     rut: '',
     nombre: '',
     apellido: '',
-    curso: '',
     correo: '',
     fecha_nacimiento: '',
   });
@@ -31,6 +30,7 @@ export default function NewEstudiantePage() {
 
       if (res.ok) {
         localStorage.setItem('rut', form.rut)
+        localStorage.setItem('userType', 'estudiante')
         router.push('/estudiante');
       } else {
         const data = await res.json();
@@ -50,7 +50,6 @@ export default function NewEstudiantePage() {
             ['rut', 'RUT'],
             ['nombre', 'Nombre'],
             ['apellido', 'Apellido'],
-            ['curso', 'Curso'],
             ['correo', 'Correo Electrónico'],
             ['fecha_nacimiento', 'Fecha de Nacimiento'],
           ].map(([name, label]) => (

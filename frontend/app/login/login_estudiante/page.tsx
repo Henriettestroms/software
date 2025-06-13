@@ -22,6 +22,7 @@ export default function LoginEstudiante() {
        const res = await fetch(`http://localhost:3001/api/alumnos/${rut}`);
         if (res.ok) {
         localStorage.setItem('rut', rut);
+        localStorage.setItem('userType', 'estudiante');
         router.push('/estudiante');
       } else {
         setError('El usuario no existe.');

@@ -1,7 +1,14 @@
 'use client';
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
+    const [showCursos, setShowCursos] = useState(false);
+
+  useEffect(() => {
+    const type = localStorage.getItem('userType');
+    setShowCursos(type === 'estudiante');
+  }, []);
   return (
     <main className="min-h-screen flex items-center justify-center bg-white">
       <div className="w-full max-w-4xl p-8">
@@ -36,6 +43,13 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+                {showCursos && (
+          <div className="mt-8 text-center">
+            <Link href="/estudiante/curso" className="text-blue-600 underline text-xl">
+              Ver mis cursos
+            </Link>
+          </div>
+        )}
       </div>
     </main>
   );
