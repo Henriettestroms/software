@@ -28,6 +28,15 @@ export default function EstudiantePage() {
     router.push('/');
   };
 
+  const handleDelete = async () => {
+    const rut = localStorage.getItem('rut');
+    if (!rut) return;
+    await fetch(`http://localhost:3001/api/alumnos/${rut}`, { method: 'DELETE' });
+    localStorage.removeItem('rut');
+    localStorage.removeItem('userType');
+    router.push('/');
+  };
+
   useEffect(() => {
     const rut = localStorage.getItem('rut');
     if (!rut) return;
@@ -48,6 +57,7 @@ export default function EstudiantePage() {
         <div className="flex justify-end gap-4 mb-4">
           <Link href="/" className="text-blue-600 underline">Inicio</Link>
           <button onClick={handleLogout} className="text-blue-600 underline">Cerrar sesión</button>
+          <button onClick={handleDelete} className="text-red-600 underline">Eliminar cuenta</button>
           <Link href="/estudiante/curso" className="text-blue-600 underline">Cursos</Link>
         </div>
         <h1 className="text-3xl font-bold text-center text-blue-900 mb-8">Perfil Estudiante</h1>

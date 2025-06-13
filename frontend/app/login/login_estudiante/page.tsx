@@ -43,7 +43,7 @@ export default function LoginEstudiante() {
             id="rut"
             value={rut}
             onChange={(e) => setRut(e.target.value)}
-            placeholder="Ej: 12345678-9"
+            placeholder="Ej: 12345678"
             className="p-3 rounded-md border border-blue-300 focus:outline-none focus:ring-2 text-gray-900 focus:ring-blue-500"
             required
           />

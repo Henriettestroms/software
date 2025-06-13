@@ -33,6 +33,15 @@ export default function CursosPage() {
     setSeleccion('');
   };
 
+  const handleRemove = (curso: string) => {
+    const rut = localStorage.getItem('rut');
+    if (!rut) return;
+    const key = `subscriptions_${rut}`;
+    const updated = cursos.filter(c => c.nombre !== curso);
+    setCursos(updated);
+    localStorage.setItem(key, JSON.stringify(updated));
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('rut');
     localStorage.removeItem('userType');
@@ -50,7 +59,10 @@ export default function CursosPage() {
         {cursos.length > 0 ? (
           cursos.map((curso, idx) => (
             <div key={idx} className="mb-3 text-blue-900">
-              <p><span className="font-medium">Curso:</span> {curso.nombre}</p>
+              <div className="flex items-center justify-between">
+                <p><span className="font-medium">Curso:</span> {curso.nombre}</p>
+                <button onClick={() => handleRemove(curso.nombre)} className="text-red-600 text-sm">Eliminar</button>
+              </div>
               <p><span className="font-medium">Promedio:</span> {curso.promedio ?? 'N/A'}</p>
             </div>
           ))

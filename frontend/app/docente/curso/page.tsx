@@ -44,6 +44,13 @@ export default function DocenteCursosPage() {
     setNueva('');
   };
 
+    const handleRemove = (curso: string) => {
+    const updated = asignaturas.filter(a => a !== curso);
+    setAsignaturas(updated);
+    localStorage.setItem('availableCourses', JSON.stringify(updated));
+    actualizarSubscripciones(updated);
+  };
+
   const handleGradeChange = (rutEst: string, curso: string, grade: string) => {
     const key = `subscriptions_${rutEst}`;
     const subs = JSON.parse(localStorage.getItem(key) || '[]');
@@ -72,7 +79,10 @@ export default function DocenteCursosPage() {
         {asignaturas.length > 0 ? (
           asignaturas.map((a, idx) => (
             <div key={idx} className="mb-4">
-              <p className="text-green-900 font-medium">Curso: {a}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-green-900 font-medium">Curso: {a}</p>
+                <button onClick={() => handleRemove(a)} className="text-red-600 text-sm">Eliminar</button>
+              </div>
               {subscripciones[a]?.length ? (
                 subscripciones[a].map((s, i) => (
                   <div key={i} className="flex items-center gap-2 ml-4 mt-1">

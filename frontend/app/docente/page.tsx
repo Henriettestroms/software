@@ -24,6 +24,15 @@ export default function DocentePage() {
     router.push('/');
   };
 
+  
+  const handleDelete = async () => {
+    const rut = localStorage.getItem('rut');
+    if (!rut) return;
+    await fetch(`http://localhost:3001/api/docentes/docente/${rut}`, { method: 'DELETE' });
+    localStorage.removeItem('rut');
+    localStorage.removeItem('userType');
+    router.push('/');
+  };
 
   useEffect(() => {
     const rut = localStorage.getItem('rut');
@@ -45,6 +54,7 @@ export default function DocentePage() {
         <div className="flex justify-end gap-4 mb-4">
           <Link href="/" className="text-green-600 underline">Inicio</Link>
           <button onClick={handleLogout} className="text-green-600 underline">Cerrar sesión</button>
+          <button onClick={handleDelete} className="text-red-600 underline">Eliminar cuenta</button>
           <Link href="/docente/curso" className="text-green-600 underline">Cursos</Link>
         </div>
         <h1 className="text-3xl font-bold text-green-900 mb-6 text-center">Perfil Docente</h1>
