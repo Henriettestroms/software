@@ -5,28 +5,32 @@ import { useRouter } from 'next/navigation';
 
 interface Curso {
   nombre: string;
-  promedio: number;
+  promedio: number | null;
 }
 
 export default function CursosPage() {
   const [cursos, setCursos] = useState<Curso[]>([]);
-  const [nuevo, setNuevo] = useState({ nombre: '', promedio: '' });
+  const [disponibles, setDisponibles] = useState<string[]>([]);
+  const [seleccion, setSeleccion] = useState('');
   const router = useRouter();
 
   useEffect(() => {
     const rut = localStorage.getItem('rut');
     if (!rut) return;
-    fetch(`http://localhost:3001/api/alumnos/${rut}`)
-      .then(res => res.ok ? res.json() : Promise.reject())
-      .then(data => setCursos(data.cursos || []))
-      .catch(() => setCursos([]));
+    const key = `subscriptions_${rut}`;
+    setCursos(JSON.parse(localStorage.getItem(key) || '[]'));
+    setDisponibles(JSON.parse(localStorage.getItem('availableCourses') || '[]'));
   }, []);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nuevo.nombre || !nuevo.promedio) return;
-    setCursos([...cursos, { nombre: nuevo.nombre, promedio: parseFloat(nuevo.promedio) }]);
-    setNuevo({ nombre: '', promedio: '' });
+    const rut = localStorage.getItem('rut');
+    if (!rut || !seleccion) return;
+    const key = `subscriptions_${rut}`;
+    const updated = [...cursos, { nombre: seleccion, promedio: null }];
+    setCursos(updated);
+    localStorage.setItem(key, JSON.stringify(updated));
+    setSeleccion('');
   };
 
   const handleLogout = () => {
@@ -46,8 +50,8 @@ export default function CursosPage() {
         {cursos.length > 0 ? (
           cursos.map((curso, idx) => (
             <div key={idx} className="mb-3 text-blue-900">
-               <p><span className="font-medium">Curso:</span> {curso.nombre}</p>
-              <p><span className="font-medium">Promedio:</span> {curso.promedio}</p>
+              <p><span className="font-medium">Curso:</span> {curso.nombre}</p>
+              <p><span className="font-medium">Promedio:</span> {curso.promedio ?? 'N/A'}</p>
             </div>
           ))
         ) : (
@@ -55,22 +59,23 @@ export default function CursosPage() {
         )}
 
         <form onSubmit={handleAdd} className="mt-6 flex flex-col gap-2">
-          <input
-            type="text"
-            placeholder="Curso"
-            value={nuevo.nombre}
-            onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
+          <select
+            value={seleccion}
+            onChange={(e) => setSeleccion(e.target.value)}
             className="p-2 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-500 text-gray-900"
-          />
-          <input
-            type="number"
-            step="0.01"
-            placeholder="Promedio"
-            value={nuevo.promedio}
-            onChange={(e) => setNuevo({ ...nuevo, promedio: e.target.value })}
-            className="p-2 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-500 text-gray-900"
-          />
-          <button type="submit" className="bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">Agregar curso</button>
+                   >
+            <option value="">Seleccionar curso</option>
+            {disponibles
+              .filter((d) => !cursos.find((c) => c.nombre === d))
+              .map((d, idx) => (
+                <option key={idx} value={d}>
+                  {d}
+                </option>
+              ))}
+          </select>
+          <button type="submit" className="bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">
+            Inscribirse
+          </button>
         </form>
       </div>
     </main>

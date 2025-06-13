@@ -6,22 +6,53 @@ import { useRouter } from 'next/navigation';
 export default function DocenteCursosPage() {
   const [asignaturas, setAsignaturas] = useState<string[]>([]);
   const [nueva, setNueva] = useState('');
+  const [subscripciones, setSubscripciones] = useState<Record<string, { rut: string; promedio: number | null }[]>>({});
   const router = useRouter();
 
   useEffect(() => {
-    const rut = localStorage.getItem('rut');
-    if (!rut) return;
-    fetch(`http://localhost:3001/api/docentes/docente/${rut}`)
-      .then(res => res.ok ? res.json() : Promise.reject())
-      .then(data => setAsignaturas(data.asignaturas ? data.asignaturas.split(',') : []))
-      .catch(() => setAsignaturas([]));
+    const stored = JSON.parse(localStorage.getItem('availableCourses') || '[]');
+    setAsignaturas(stored);
+    actualizarSubscripciones(stored);
   }, []);
+
+    const actualizarSubscripciones = (cursos: string[]) => {
+    const data: Record<string, { rut: string; promedio: number | null }[]> = {};
+    cursos.forEach(c => {
+      data[c] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('subscriptions_')) {
+          const rut = key.replace('subscriptions_', '');
+          const cursosEst = JSON.parse(localStorage.getItem(key) || '[]');
+          const match = cursosEst.find((ce: any) => ce.nombre === c);
+          if (match) {
+            data[c].push({ rut, promedio: match.promedio ?? null });
+          }
+        }
+      }
+    });
+    setSubscripciones(data);
+  };
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (!nueva.trim()) return;
-    setAsignaturas([...asignaturas, nueva.trim()]);
+    const updated = [...asignaturas, nueva.trim()];
+    setAsignaturas(updated);
+    localStorage.setItem('availableCourses', JSON.stringify(updated));
+    actualizarSubscripciones(updated);
     setNueva('');
+  };
+
+  const handleGradeChange = (rutEst: string, curso: string, grade: string) => {
+    const key = `subscriptions_${rutEst}`;
+    const subs = JSON.parse(localStorage.getItem(key) || '[]');
+    const idx = subs.findIndex((s: any) => s.nombre === curso);
+    if (idx > -1) {
+      subs[idx].promedio = grade === '' ? null : parseFloat(grade);
+      localStorage.setItem(key, JSON.stringify(subs));
+      actualizarSubscripciones(asignaturas);
+    }
   };
 
   const handleLogout = () => {
@@ -40,7 +71,26 @@ export default function DocenteCursosPage() {
         <h1 className="text-3xl font-bold text-center text-green-900 mb-6">Cursos</h1>
         {asignaturas.length > 0 ? (
           asignaturas.map((a, idx) => (
-            <p key={idx} className="mb-2 text-green-900"><span className="font-medium">Curso:</span> {a}</p>
+            <div key={idx} className="mb-4">
+              <p className="text-green-900 font-medium">Curso: {a}</p>
+              {subscripciones[a]?.length ? (
+                subscripciones[a].map((s, i) => (
+                  <div key={i} className="flex items-center gap-2 ml-4 mt-1">
+                    <span className="text-green-900 text-sm">Alumno {s.rut}</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={s.promedio ?? ''}
+                      onChange={(e) => handleGradeChange(s.rut, a, e.target.value)}
+                      className="p-1 w-20 rounded-md border border-green-300 text-gray-900"
+                      placeholder="Nota"
+                    />
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-700 ml-4">Sin alumnos inscritos.</p>
+              )}
+            </div>
           ))
         ) : (
           <p className="text-gray-700">No hay cursos registrados.</p>
