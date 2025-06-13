@@ -19,16 +19,10 @@ export default function LoginEstudiante() {
     }
 
     try {
-      const res = await fetch('http://localhost:3001/api/estudiante/login', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rut }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.exists) {
-        router.push('/estudiante'); // Ruta de perfil o dashboard del estudiante
+       const res = await fetch(`http://localhost:3001/api/alumnos/${rut}`);
+        if (res.ok) {
+        localStorage.setItem('rut', rut);
+        router.push('/estudiante');
       } else {
         setError('El usuario no existe.');
       }

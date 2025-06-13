@@ -19,16 +19,11 @@ export default function LoginDocente() {
     }
 
     try {
-      const res = await fetch('http://localhost:3001/api/docentes/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rut }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.exists) {
-        router.push('/docente'); // Ruta de perfil o dashboard del docente
+       const res = await fetch(`http://localhost:3001/api/docentes/docente/${rut}`);
+       if (res.ok) {
+        // Guardamos el rut para usarlo en otras páginas
+        localStorage.setItem('rut', rut);
+        router.push('/docente');
       } else {
         setError('El usuario no existe.');
       }
@@ -37,7 +32,7 @@ export default function LoginDocente() {
     }
   };
 
-  return (
+ return (
     <main className="min-h-screen flex items-center justify-center bg-white">
       <div className="bg-green-100 rounded-2xl shadow-md p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-green-900 mb-6">Ingreso Docente</h1>

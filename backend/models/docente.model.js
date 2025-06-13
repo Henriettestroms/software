@@ -38,7 +38,7 @@ const Docente = {
       data.apellido,
       data.correo,
       data.fecha_nacimiento,
-      data.ensayos_creados,
+      data.ensayos_generados,
       rut
     ];
     db.query(query, values, callback);
